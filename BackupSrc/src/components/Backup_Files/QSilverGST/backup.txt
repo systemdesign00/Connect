@@ -1,0 +1,1289 @@
+import React, { useState, useEffect,useRef } from 'react'
+import { createAPIEndpoint, ENDPIONTS } from "../../api";
+import { makeStyles } from '@mui/styles';
+import { useTheme } from '@mui/material/styles';
+import DeleteOutlineTwoToneIcon from '@mui/icons-material/DeleteOutlineTwoTone';
+import ConfirmDialog from '../../layouts/ConfirmDialog';
+import Table from '@mui/material/Table';
+import Chip from '@mui/material/Chip';
+import Check from '@mui/icons-material/Check';
+import Badge from '@mui/material/Badge';
+import TableBody from '@mui/material/TableBody';
+import { styled } from '@mui/material/styles';
+import TableCell from '@mui/material/TableCell';
+import * as userService from "../../Services/userService";
+import TableHead from '@mui/material/TableHead';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputAdornment from '@mui/material/InputAdornment';
+import FormHelperText from '@mui/material/FormHelperText';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import ReactToPrint from 'react-to-print';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import TableRow from '@mui/material/TableRow';
+import TableContainer from '@mui/material/TableContainer';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import CloseOutlined from '@mui/icons-material/CloseOutlined'
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import LocalPrintshopOutlinedIcon from '@mui/icons-material/LocalPrintshopOutlined';
+import DatePicker from '../../hooks/DatePicker';
+import {NumberFormat} from '../../Services/NumberFormat';
+import InputBase from '@mui/material/InputBase';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+import DirectionsIcon from '@mui/icons-material/Directions';
+import useTable from './useTables';
+import { useDownloadExcel } from 'react-export-table-to-excel';
+import Draggable from 'react-draggable';
+
+function PaperComponent(props) {
+  return (
+    <Draggable
+      handle="#draggable-dialog-title"
+      cancel={'[class*="MuiDialogContent-root"]'}
+    >
+      <Paper {...props} />
+    </Draggable>
+  );
+}
+const useStyles = makeStyles(theme => ({
+
+    table: {
+        '& thead th': {
+            fontWeight: '600',
+            color: '#333996',
+            backgroundColor: "#3C44B126",
+        },
+        '& tbody td': {
+            fontWeight: '300',
+        },
+        '& tbody tr:hover': {
+            backgroundColor: '#fffbf2',
+            cursor: 'pointer',
+        },
+        '& .MuiTableCell-root': {
+            border: 'none'
+        }
+    }
+
+}))
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    backgroundColor: 'red',
+    color: 'red',
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    '&::after': {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      borderRadius: '50%',
+      animation: 'ripple 1.2s infinite ease-in-out',
+      border: '1px solid currentColor',
+      content: '""',
+    },
+  },
+  '@keyframes ripple': {
+    '0%': {
+      transform: 'scale(.8)',
+      opacity: 1,
+    },
+    '100%': {
+      transform: 'scale(2.4)',
+      opacity: 0,
+    },
+  },
+}));
+
+export default function OrderList(props) {
+    const classes = useStyles();
+    const { setOrderId, setOrderListVisibility, resetFormControls, setNotify } = props;
+
+const errorsound = new Audio('https://www.myinstants.com/media/sounds/erro.mp3')
+const [data, setData]=useState([]);
+  const [filterFn, setFilterFn] = useState({ fn: items => { return items; } })
+    const [orderList, setOrderList] = useState([]);
+    const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
+     const fetchAlled = () => {
+         createAPIEndpoint(ENDPIONTS.GSESTIMATE).fetchAll()
+            .then(res => {
+                setData(res.data)
+            })
+             .catch(err => console.log(err))
+
+              createAPIEndpoint(ENDPIONTS.GSESTIMATE).fetchAll()
+            .then(res => {
+                setOrderList(res.data)
+            })
+             .catch(err => console.log(err))
+            //.catch(
+              //    errorsound.play(),
+                //setNotify({ isOpen: true, message: "Error Check Your Network",severity:"warning" }))
+    }
+    useEffect(() => {
+        createAPIEndpoint(ENDPIONTS.GSESTIMATE).fetchAll()
+            .then(res => {
+              
+                setData(res.data)
+            })
+            .catch(err => console.log(err))
+
+             createAPIEndpoint(ENDPIONTS.GSESTIMATE).fetchAll()
+            .then(res => {
+                setOrderList(res.data)
+            })
+             .catch(err => console.log(err))
+    }, [])
+
+    const showForUpdate = id => {
+        setOrderId(id);
+        setOrderListVisibility(false);
+    }
+    /*   const deleteOrder = id => {
+           setConfirmDialog({
+               ...confirmDialog,
+               isOpen: false
+           })
+   
+   
+   
+       }*/
+
+       const {
+   
+    TblPagination,
+    datas,
+    TblHead,
+} = useTable(data, filterFn,userService.headCellsitem);
+const handleSearchcustomer = e => {
+    let target = e.target;
+    setFilterFn({
+        fn: items => {
+            if (target.value === "")
+                return items;
+            else
+                return items.filter(x => x.fullName.toLowerCase().includes(target.value))
+                
+        }
+    })
+}
+        const onDelete = id => {
+        setConfirmDialog({
+            ...confirmDialog,
+            isOpen: false
+         })
+       createAPIEndpoint(ENDPIONTS.GSESTIMATE).delete(id)
+                   .then(res => {
+                   fetchAlled();
+                   resetFormControls();
+                   })
+                   .catch(
+                       //errorsound.play(),
+                   // setNotify({ isOpen: true, message: "Deleting Failed",severity:"warning" }))
+                   setNotify({ isOpen: true, message: 'Deleted successfully.' }));
+       
+    }
+
+  
+    /*
+       const deleteOrder = id => {
+           if (window.confirm('Are you sure to delete this record?')) {
+               createAPIEndpoint(ENDPIONTS.ORDER).delete(id)
+                   .then(res => {
+                       setOrderListVisibility(false);
+                       setOrderId(0);
+                       resetFormControls();
+                       setNotify({ isOpen: true, message: 'Deleted successfully.' });
+                   })
+                   .catch(err => console.log(err))
+           }
+       }*/
+  let today = new Date();
+
+const isToday = today.getDate() + "-"+ parseInt(today.getMonth()+1) +"-"+today.getFullYear();
+       
+const audio = new Audio('https://www.winhistory.de/more/winstart/mp3/vistashutdown.mp3')
+const adddatapercent =   orderList.map(item => (item.orderPercent.reduce((total, currentValue) => total = total + Number(currentValue.foodItemPrice),0)));
+console.log(adddatapercent.reduce((total,currentValue) => total = total + currentValue,0))
+let savedatapercent = adddatapercent.reduce((total,currentValue) => total = total + currentValue,0);
+
+const adddatawastage =   orderList.map(item => (item.watageitems.reduce((total, currentValue) => total = total + Number(currentValue.foodItemPrice),0)));
+console.log(adddatawastage.reduce((total,currentValue) => total = total + currentValue,0))
+let savedataadddatawastage = adddatawastage.reduce((total,currentValue) => total = total + currentValue,0);
+
+const adddataadd =   orderList.map(item => (item.addorderDetails.reduce((total, currentValue) => total = total + Number(currentValue.foodItemPrice),0)));
+console.log(adddataadd.reduce((total,currentValue) => total = total + currentValue,0))
+let savedataadd = adddataadd.reduce((total,currentValue) => total = total + currentValue,0);
+
+const adddatasilver =   orderList.map(item => (item.orderDetails.reduce((total, currentValue) => total = total + Number(currentValue.foodItemPrice),0)));
+console.log(adddatasilver.reduce((total,currentValue) => total = total + currentValue,0))
+let savedatasilver = adddatasilver.reduce((total,currentValue) => total = total + currentValue,0);
+
+const adddatasilverfancy =   orderList.map(item => (item.fancyitems.reduce((total, currentValue) => total = total + Number(currentValue.foodItemPrice),0)));
+console.log(adddatasilverfancy.reduce((total,currentValue) => total = total + currentValue,0))
+let savedatasilverfancy = adddatasilverfancy.reduce((total,currentValue) => total = total + currentValue,0);
+
+{/*OLD CALCULATION */ }
+const oldcalgold =   orderList.map(item => (item.oldorderDetails.reduce((total, currentValue) => total = total + Number(currentValue.foodItemPrices),0)));
+console.log(oldcalgold.reduce((total,currentValue) => total = total + currentValue,0))
+let saveoldcalc = oldcalgold.reduce((total,currentValue) => total = total + currentValue,0);
+
+const oldsilvercalc =   orderList.map(item => (item.oldorderDetailsilver.reduce((total, currentValue) => total = total + Number(currentValue.foodItemPrices),0)));
+console.log(oldsilvercalc.reduce((total,currentValue) => total = total + currentValue,0))
+let saveoldsilver = oldsilvercalc.reduce((total,currentValue) => total = total + currentValue,0);
+
+{/*Cash Count */}
+
+let cashcountreceived = Number(orderList.reduce((total, currentValue) => total = total + Number(currentValue.gCash),0));
+let cashcountonline = Number(orderList.reduce((total, currentValue) => total = total + Number(currentValue.onlinecash),0));
+
+let totalcash = Number(cashcountreceived) + Number(cashcountonline)
+
+let netweight = Number(savedatapercent) + Number(savedataadddatawastage) + Number(savedataadd)
+let netoldgoldweight = Number(saveoldcalc) 
+let netoldsilverweight =  Number(saveoldsilver) 
+//const inputTS = Date.parse(input);
+//const result = orderList.filter(d=> d.hireDate === isToday);
+const edited = "BALANCE";
+
+const handleDelete = (index,e) => {
+      setOrderList(orderList.filter((v, i) => i !== index));
+  }
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const tableRef = useRef();
+
+    const { onDownload } = useDownloadExcel({
+        currentTableRef: tableRef.current,
+        filename: 'Users table',
+        sheet: 'Users'
+    })
+    return (
+        <>
+   
+ 
+         <Chip variant="outlined" label={"GOLD:"+Number(netweight).toFixed(3)} color="primary" />
+        &nbsp;&nbsp; <Chip variant="outlined" label={"SILVER:"+Number(savedatasilver).toFixed(3)} color="success" />
+        &nbsp;&nbsp;  <Chip variant="outlined" label={"92.5-SILVER:"+Number(savedatasilverfancy).toFixed(3)} color="error" />
+        &nbsp;&nbsp;  <Chip variant="outlined" label={"OLD_GOLD:"+Number(netoldgoldweight).toFixed(3)} color="secondary" />
+          &nbsp;&nbsp;  <Chip variant="outlined" label={"OLD_SILVER:"+Number(netoldsilverweight).toFixed(3)} color="default" />
+         &nbsp;&nbsp;  <Chip variant="outlined" label={"CASH:"+NumberFormat(Number(totalcash))} color="default" />   
+       <FormControl fullWidth sx={{ m: 1 }}>
+          <InputLabel htmlFor="outlined-adornment-amount">Search Customer</InputLabel>
+          <OutlinedInput
+            id="outlined-adornment-amount"
+            onChange={handleSearchcustomer}
+            startAdornment={<InputAdornment position="start"><SearchIcon onClick={handleClickOpen}/></InputAdornment>}
+            label="Search Customer"
+          />
+        </FormControl>
+            <TableContainer component={Paper} sx={{marginRight:0,marginLeft:0 }}>
+                <Table className={classes.table} >
+                    <TableHead>
+                        <TableRow>
+                            <TableCell >Bill No</TableCell>
+                            <TableCell>Customer</TableCell>
+                            <TableCell>City/Town</TableCell>
+                            <TableCell>Mobile</TableCell>
+                              <TableCell>Date</TableCell>
+                              <TableCell>Status</TableCell>
+                            <TableCell>Grand Total</TableCell>
+                            <TableCell></TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {
+                            datas().map(item => (
+                              
+                                <TableRow key={item.id}>
+                                  
+                                    <TableCell
+                                        onClick={e => showForUpdate(item.id)}>
+                                          {item.id}
+                                      {/*  <Avatar  src={item.imageSrc} sx={{ bgcolor: 'white'}}>
+                            <Box fontWeight="fontWeightBold" fontFamily="sans-serif" color='#007FFF'>
+                               {item.fullName.charAt(0)}
+                                </Box>
+                                         
+                            </Avatar> */}
+                                    </TableCell>
+                                    <TableCell>{item.fullName}</TableCell>
+                                    <TableCell
+                                        onClick={e => showForUpdate(item.id)}>
+                                        {item.city}
+                                    </TableCell>
+                                    <TableCell
+                                        onClick={e => showForUpdate(item.id)}>
+                                        {item.mobile}
+                                    </TableCell>
+                                     {
+               isToday == item.hireDate ? 
+                <TableCell  >
+                  <StyledBadge
+        overlap="circular"
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        variant="dot"
+      >
+        <Chip label={item.hireDate} onClick={e => showForUpdate(item.id)} color="error" variant="outlined"/>
+      </StyledBadge>
+         
+        </TableCell>
+     
+       : 
+          <TableCell  onClick={e => showForUpdate(item.id)}> 
+        {item.hireDate}
+          </TableCell>
+      
+              }
+              <TableCell onClick={e => showForUpdate(item.id)}>
+                   {
+               edited == item.status ? 
+                <TableCell  onClick={e => showForUpdate(item.id)}>
+                  <StyledBadge
+        overlap="circular"
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        variant="dot"
+      >
+        <Chip label={item.status}  color="error" variant="outlined"/>
+      </StyledBadge>
+         
+        </TableCell>
+     
+       : 
+          <TableCell  onClick={e => showForUpdate(item.id)}> 
+          <Chip label={item.status}  color="success" variant="outlined" 
+            icon={<Check fontSize="small" />}/>
+          </TableCell>
+      }
+                  </TableCell>
+             
+                                    
+                                    <TableCell
+                                        onClick={e => showForUpdate(item.id)}>
+                                        {NumberFormat(Number(item.gCash) + Number(item.onlinecash))}
+                                    </TableCell>
+                                    <TableCell>
+                                           {
+               edited == item.status ? 
+                <TableCell  >
+                     
+         
+        </TableCell>
+     
+       : 
+          <TableCell  > 
+         <DeleteOutlineTwoToneIcon
+                                            color="error"
+                                            //onClick={e => deleteOrder(item.id)} 
+                                             onClick={() => {
+                               //deleteOrder(item.id)
+                                audio.play();
+                                                setConfirmDialog({
+                                                    isOpen: true,
+                                                    //avatarimage:item.imageSrc,
+                                                    title: 'Are you sure to delete this record?',
+                                                    subTitle: "You can't undo this operation",
+                                                    onConfirm: () => { onDelete(item.id) }
+                                                })
+                                            }}/>
+          </TableCell>
+      }
+                                    
+
+                                    </TableCell>
+
+                                </TableRow>
+                            ))
+                        }
+                    </TableBody>
+
+                </Table>
+                 <TblPagination />
+            </TableContainer>
+            <ConfirmDialog
+                confirmDialog={confirmDialog}
+                setConfirmDialog={setConfirmDialog}
+            />
+
+            <Dialog
+        maxWidth={50}
+        onBackdropClick="false"
+        open={open}
+        hideBackdrop
+        onClose={handleClose}
+        aria-labelledby="draggable-dialog-title"
+        PaperComponent={PaperComponent}
+        aria-describedby="alert-dialog-description"
+      >
+         <DialogTitle className={classes.dialogTitle} style={{ cursor: 'move' }} id="draggable-dialog-title">
+                <div style={{ display: 'flex' }}>
+                    <Typography variant="h6"  style={{ flexGrow: 0.97}}>
+                       {/*values.fullName*/}
+                    </Typography>
+                     <Button className={`${classes.rootbutton}`}
+                        color="info"
+                        style={{  backgroundColor: 'lightblue'}} 
+                      
+                        >
+                            
+                       <LocalPrintshopOutlinedIcon onClick={onDownload} />
+                    </Button>
+                    <Button className={`${classes.rootbutton}`}
+                        color="error"
+                        style={{  backgroundColor: '#ffbfbf'}} 
+                        onClick={handleClose}>
+                   <CloseOutlined/>
+                    </Button>
+                </div>
+            </DialogTitle>
+            
+            
+        <DialogContent dividers>
+          <DialogContentText >
+               <Box width='794px' height="800px" className="watermark">
+             
+       <TableContainer >
+       
+      <Table sx={{ minWidth: 650 }} size="small" aria-label="a dense table" className={classes.tablebill} ref={tableRef}>
+        <TableHead>
+          <TableRow>
+          <TableCell>ITEM ID</TableCell>
+             <TableCell>SALES DATE</TableCell>
+             <TableCell>SALES TYPE</TableCell>
+              <TableCell>NAME</TableCell>
+             <TableCell>ITEM NAME</TableCell>
+              <TableCell>QUANTITY</TableCell>
+             <TableCell>GROSS WEIGHT</TableCell>
+          </TableRow>
+        </TableHead>
+      
+        <TableBody>
+        
+           {
+   orderList?.map(item => (item.orderPercent.map((row) => 
+   <TableRow
+              key={row.id}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+               <TableCell  component="th" scope="row">{
+           row.id  }</TableCell>
+              <TableCell>{row.salesdate}</TableCell>
+               <TableCell>{item.status}</TableCell>
+                <TableCell>{item.fullName}</TableCell>
+              <TableCell >{row.foodItemName}</TableCell>
+                    <TableCell >{row.quantity}</TableCell>
+              <TableCell >{row.foodItemPrice+"G"}</TableCell>
+         
+          </TableRow>
+   )))}      
+   {
+   orderList?.map(item => (item.addorderDetails.map((row) => 
+   <TableRow
+              key={row.id}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+               <TableCell  component="th" scope="row">{
+           row.id  }</TableCell>
+              <TableCell>{row.salesdate}</TableCell>
+               <TableCell>{item.status}</TableCell>
+                <TableCell>{item.fullName}</TableCell>
+              <TableCell >{row.foodItemName}</TableCell>
+              <TableCell >{row.quantity}</TableCell>
+              <TableCell >{row.foodItemPrice+"G"}</TableCell>
+             
+          </TableRow>
+   )))}
+   
+    {
+   orderList?.map(item => (item.watageitems.map((row) => 
+   <TableRow
+              key={row.name}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+               <TableCell  component="th" scope="row">{
+           row.id  }</TableCell>
+              <TableCell>{row.salesdate}</TableCell> 
+              <TableCell>{item.status}</TableCell>
+                <TableCell>{item.fullName}</TableCell>
+              <TableCell >{row.foodItemName}</TableCell>
+                <TableCell >{row.quantity}</TableCell>
+              <TableCell >{row.foodItemPrice+"G"}</TableCell>
+             
+               
+          </TableRow>
+   )))}
+          
+{
+   orderList?.map(item => (item.orderDetails.map((row) => 
+   <TableRow
+              key={row.id}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+               <TableCell  component="th" scope="row">{
+           row.id  }</TableCell>
+              <TableCell>{row.salesdate}</TableCell>
+               <TableCell>{item.status}</TableCell>
+                <TableCell>{item.fullName}</TableCell>
+              <TableCell >{row.foodItemName}</TableCell>
+               <TableCell >{row.quantity}</TableCell>
+              <TableCell >{row.foodItemPrice+"G"}</TableCell>
+              
+          </TableRow>
+   )))}
+{
+   orderList.map(item => (item.fancyitems.map((row) => 
+   <TableRow
+              key={row.id}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+               <TableCell  component="th" scope="row">{
+           row.id  }</TableCell>
+              <TableCell>{row.salesdate}</TableCell>
+               <TableCell>{item.status}</TableCell>
+                <TableCell>{item.fullName}</TableCell>
+              <TableCell >{row.foodItemName}</TableCell>
+               <TableCell >{row.quantity}</TableCell>
+              <TableCell >{row.foodItemPrice+"G"}</TableCell>
+              
+          </TableRow>
+   )))}
+
+{
+   orderList?.map(item => (item.oldorderDetails.map((row) => 
+   <TableRow
+              key={row.id}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+               <TableCell  component="th" scope="row">{
+           row.id  }</TableCell>
+              <TableCell>{row.salesdate}</TableCell>
+               <TableCell>-</TableCell>
+                <TableCell>{item.fullName}</TableCell>
+              <TableCell >{row.foodItemNames}</TableCell>
+                 <TableCell >-</TableCell>
+              <TableCell >{row.foodItemPrices+"G"}</TableCell>
+            
+          </TableRow>
+   )))}
+ {
+   orderList.map(item => (item.oldorderDetailsilver.map((row) => 
+   <TableRow
+              key={row.name}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+               <TableCell  component="th" scope="row">{
+           row.id  }</TableCell>
+              <TableCell>{row.salesdate}</TableCell>
+               <TableCell>-</TableCell>
+                <TableCell>{item.fullName}</TableCell>
+              <TableCell >{row.foodItemNames}</TableCell>
+                 <TableCell >-</TableCell>
+              <TableCell >{row.foodItemPrices+"G"}</TableCell>
+            
+          </TableRow>
+   )))}
+
+        </TableBody>
+      </Table>
+<Divider/>
+
+
+   
+   
+    
+    
+    </TableContainer> 
+
+
+         
+              
+         </Box>
+ 
+          </DialogContentText>
+       
+
+        </DialogContent>
+       
+      </Dialog>
+        </>
+    )
+}
+
+
+
+import React, { useState, useEffect,useRef } from 'react'
+import { createAPIEndpoint, ENDPIONTS } from "../../api";
+import { makeStyles } from '@mui/styles';
+import { useTheme } from '@mui/material/styles';
+import DeleteOutlineTwoToneIcon from '@mui/icons-material/DeleteOutlineTwoTone';
+import ConfirmDialog from '../../layouts/ConfirmDialog';
+import Table from '@mui/material/Table';
+import Chip from '@mui/material/Chip';
+import Check from '@mui/icons-material/Check';
+import Badge from '@mui/material/Badge';
+import TableBody from '@mui/material/TableBody';
+import { styled } from '@mui/material/styles';
+import TableCell from '@mui/material/TableCell';
+import * as userService from "../../Services/userService";
+import TableHead from '@mui/material/TableHead';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputAdornment from '@mui/material/InputAdornment';
+import FormHelperText from '@mui/material/FormHelperText';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import ReactToPrint from 'react-to-print';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
+import TableRow from '@mui/material/TableRow';
+import TableContainer from '@mui/material/TableContainer';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import CloseOutlined from '@mui/icons-material/CloseOutlined'
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
+import LocalPrintshopOutlinedIcon from '@mui/icons-material/LocalPrintshopOutlined';
+import DatePicker from '../../hooks/DatePicker';
+import {NumberFormat} from '../../Services/NumberFormat';
+import InputBase from '@mui/material/InputBase';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+import DirectionsIcon from '@mui/icons-material/Directions';
+import useTable from './useTables';
+import { useDownloadExcel } from 'react-export-table-to-excel';
+import Draggable from 'react-draggable';
+import jsPDF from "jspdf";
+import Pdf from "react-to-pdf";
+
+function PaperComponent(props) {
+  return (
+    <Draggable
+      handle="#draggable-dialog-title"
+      cancel={'[class*="MuiDialogContent-root"]'}
+    >
+      <Paper {...props} />
+    </Draggable>
+  );
+}
+const useStyles = makeStyles(theme => ({
+
+    table: {
+        '& thead th': {
+            fontWeight: '600',
+            color: '#333996',
+            backgroundColor: "#3C44B126",
+        },
+        '& tbody td': {
+            fontWeight: '300',
+        },
+        '& tbody tr:hover': {
+            backgroundColor: '#fffbf2',
+            cursor: 'pointer',
+        },
+        '& .MuiTableCell-root': {
+            border: 'none'
+        }
+    }
+
+}))
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    backgroundColor: 'red',
+    color: 'red',
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    '&::after': {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      borderRadius: '50%',
+      animation: 'ripple 1.2s infinite ease-in-out',
+      border: '1px solid currentColor',
+      content: '""',
+    },
+  },
+  '@keyframes ripple': {
+    '0%': {
+      transform: 'scale(.8)',
+      opacity: 1,
+    },
+    '100%': {
+      transform: 'scale(2.4)',
+      opacity: 0,
+    },
+  },
+}));
+
+export default function OrderList(props) {
+    const classes = useStyles();
+    const { setOrderId, setOrderListVisibility, resetFormControls, setNotify } = props;
+ const tableRef = useRef();
+const errorsound = new Audio('https://www.myinstants.com/media/sounds/erro.mp3')
+const [data, setData]=useState([]);
+  const [filterFn, setFilterFn] = useState({ fn: items => { return items; } })
+    const [orderList, setOrderList] = useState([]);
+    const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', subTitle: '' })
+     const fetchAlled = () => {
+         createAPIEndpoint(ENDPIONTS.GSESTIMATE).fetchAll()
+            .then(res => {
+                setData(res.data)
+            })
+             .catch(err => console.log(err))
+
+              createAPIEndpoint(ENDPIONTS.GSESTIMATE).fetchAll()
+            .then(res => {
+                setOrderList(res.data)
+            })
+             .catch(err => console.log(err))
+            //.catch(
+              //    errorsound.play(),
+                //setNotify({ isOpen: true, message: "Error Check Your Network",severity:"warning" }))
+    }
+    useEffect(() => {
+        createAPIEndpoint(ENDPIONTS.GSESTIMATE).fetchAll()
+            .then(res => {
+              
+                setData(res.data)
+            })
+            .catch(err => console.log(err))
+
+             createAPIEndpoint(ENDPIONTS.GSESTIMATE).fetchAll()
+            .then(res => {
+                setOrderList(res.data)
+            })
+             .catch(err => console.log(err))
+    }, [])
+
+    const showForUpdate = id => {
+        setOrderId(id);
+        setOrderListVisibility(false);
+    }
+    /*   const deleteOrder = id => {
+           setConfirmDialog({
+               ...confirmDialog,
+               isOpen: false
+           })
+   
+   
+   
+       }*/
+
+       const {
+   
+    TblPagination,
+    datas,
+    TblHead,
+} = useTable(data, filterFn,userService.headCellsitem);
+const handleSearchcustomer = e => {
+    let target = e.target;
+    setFilterFn({
+        fn: items => {
+            if (target.value === "")
+                return items;
+            else
+                return items.filter(x => x.fullName.toLowerCase().includes(target.value))
+                
+        }
+    })
+}
+        const onDelete = id => {
+        {/*setConfirmDialog({
+            ...confirmDialog,
+            isOpen: false
+         })
+        */}
+       createAPIEndpoint(ENDPIONTS.GSESTIMATE).delete(id)
+                   .then(res => {
+                   fetchAlled();
+                   resetFormControls();
+                   })
+                   .catch(
+                       //errorsound.play(),
+                   // setNotify({ isOpen: true, message: "Deleting Failed",severity:"warning" }))
+                   setNotify({ isOpen: true, message: 'Deleted successfully.' }));
+       
+    }
+
+  
+    /*
+       const deleteOrder = id => {
+           if (window.confirm('Are you sure to delete this record?')) {
+               createAPIEndpoint(ENDPIONTS.ORDER).delete(id)
+                   .then(res => {
+                       setOrderListVisibility(false);
+                       setOrderId(0);
+                       resetFormControls();
+                       setNotify({ isOpen: true, message: 'Deleted successfully.' });
+                   })
+                   .catch(err => console.log(err))
+           }
+       }*/
+  let today = new Date();
+
+const isToday = today.getDate() + "-"+ parseInt(today.getMonth()+1) +"-"+today.getFullYear();
+       
+const audio = new Audio('https://www.winhistory.de/more/winstart/mp3/vistashutdown.mp3')
+const adddatapercent =   orderList.map(item => (item.orderPercent.reduce((total, currentValue) => total = total + Number(currentValue.foodItemPrice),0)));
+console.log(adddatapercent.reduce((total,currentValue) => total = total + currentValue,0))
+let savedatapercent = adddatapercent.reduce((total,currentValue) => total = total + currentValue,0);
+
+const adddatawastage =   orderList.map(item => (item.watageitems.reduce((total, currentValue) => total = total + Number(currentValue.foodItemPrice),0)));
+console.log(adddatawastage.reduce((total,currentValue) => total = total + currentValue,0))
+let savedataadddatawastage = adddatawastage.reduce((total,currentValue) => total = total + currentValue,0);
+
+const adddataadd =   orderList.map(item => (item.addorderDetails.reduce((total, currentValue) => total = total + Number(currentValue.foodItemPrice),0)));
+console.log(adddataadd.reduce((total,currentValue) => total = total + currentValue,0))
+let savedataadd = adddataadd.reduce((total,currentValue) => total = total + currentValue,0);
+
+const adddatasilver =   orderList.map(item => (item.orderDetails.reduce((total, currentValue) => total = total + Number(currentValue.foodItemPrice),0)));
+console.log(adddatasilver.reduce((total,currentValue) => total = total + currentValue,0))
+let savedatasilver = adddatasilver.reduce((total,currentValue) => total = total + currentValue,0);
+
+const adddatasilverfancy =   orderList.map(item => (item.fancyitems.reduce((total, currentValue) => total = total + Number(currentValue.foodItemPrice),0)));
+console.log(adddatasilverfancy.reduce((total,currentValue) => total = total + currentValue,0))
+let savedatasilverfancy = adddatasilverfancy.reduce((total,currentValue) => total = total + currentValue,0);
+
+{/*OLD CALCULATION */ }
+const oldcalgold =   orderList.map(item => (item.oldorderDetails.reduce((total, currentValue) => total = total + Number(currentValue.foodItemPrices),0)));
+console.log(oldcalgold.reduce((total,currentValue) => total = total + currentValue,0))
+let saveoldcalc = oldcalgold.reduce((total,currentValue) => total = total + currentValue,0);
+
+const oldsilvercalc =   orderList.map(item => (item.oldorderDetailsilver.reduce((total, currentValue) => total = total + Number(currentValue.foodItemPrices),0)));
+console.log(oldsilvercalc.reduce((total,currentValue) => total = total + currentValue,0))
+let saveoldsilver = oldsilvercalc.reduce((total,currentValue) => total = total + currentValue,0);
+
+{/*Cash Count */}
+
+let cashcountreceived = Number(orderList.reduce((total, currentValue) => total = total + Number(currentValue.gCash),0));
+let cashcountonline = Number(orderList.reduce((total, currentValue) => total = total + Number(currentValue.onlinecash),0));
+
+let totalcash = Number(cashcountreceived) + Number(cashcountonline)
+
+let netweight = Number(savedatapercent) + Number(savedataadddatawastage) + Number(savedataadd)
+let netoldgoldweight = Number(saveoldcalc) 
+let netoldsilverweight =  Number(saveoldsilver) 
+//const inputTS = Date.parse(input);
+//const result = orderList.filter(d=> d.hireDate === isToday);
+const edited = "BALANCE";
+
+const handleDelete = (index,e) => {
+      setOrderList(orderList.filter((v, i) => i !== index));
+  }
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+   
+
+const Todaysales = today.getDate() + "-"+ parseInt(today.getMonth()+1) +"-"+today.getFullYear();
+ 
+
+    const { onDownload } = useDownloadExcel({
+        currentTableRef: tableRef.current,
+        filename: Todaysales,
+        sheet: 'Users'
+    })
+//const ref = React.createRef();
+     const reportTemplateRef = useRef(null);
+ // values.city = searchSelectedCountry &&searchSelectedCountry.city   
+const handleGeneratePdf = () => {
+    const doc = new jsPDF({
+     unit: 'px',
+	format: "a2",
+      orientation:"portrait"
+    });
+
+    // Adding the fonts
+    doc.setFont("Inter-Regular", "normal");
+
+    doc.html(reportTemplateRef.current, {
+      async callback(doc) {
+        await doc.save(Todaysales);
+      }
+    });
+  };
+    return (
+        <>
+   
+ 
+         <Chip variant="outlined" label={"GOLD:"+Number(netweight).toFixed(3)} color="primary" />
+        &nbsp;&nbsp; <Chip variant="outlined" label={"SILVER:"+Number(savedatasilver).toFixed(3)} color="success" />
+        &nbsp;&nbsp;  <Chip variant="outlined" label={"92.5-SILVER:"+Number(savedatasilverfancy).toFixed(3)} color="error" />
+        &nbsp;&nbsp;  <Chip variant="outlined" label={"OLD_GOLD:"+Number(netoldgoldweight).toFixed(3)} color="secondary" />
+          &nbsp;&nbsp;  <Chip variant="outlined" label={"OLD_SILVER:"+Number(netoldsilverweight).toFixed(3)} color="default" />
+         &nbsp;&nbsp;  <Chip variant="outlined" label={"CASH:"+NumberFormat(Number(totalcash))} color="default" />   
+       <FormControl fullWidth sx={{ m: 1 }}>
+          <InputLabel htmlFor="outlined-adornment-amount">Search Customer</InputLabel>
+          <OutlinedInput
+            id="outlined-adornment-amount"
+            onChange={handleSearchcustomer}
+            startAdornment={<InputAdornment position="start"><SearchIcon onClick={handleClickOpen}/></InputAdornment>}
+            label="Search Customer"
+          />
+        </FormControl>
+            <TableContainer component={Paper} sx={{marginRight:0,marginLeft:0 }}>
+                <Table className={classes.table} >
+                    <TableHead>
+                        <TableRow>
+                            <TableCell >Bill No</TableCell>
+                            <TableCell>Customer</TableCell>
+                            <TableCell>City/Town</TableCell>
+                            <TableCell>Mobile</TableCell>
+                              <TableCell>Date</TableCell>
+                              <TableCell>Status</TableCell>
+                            <TableCell>Grand Total</TableCell>
+                            <TableCell></TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody>
+                        {
+                            datas().map(item => (
+                              
+                                <TableRow key={item.id}>
+                                  
+                                    <TableCell
+                                        onClick={e => showForUpdate(item.id)}>
+                                          {item.id}
+                                      {/*  <Avatar  src={item.imageSrc} sx={{ bgcolor: 'white'}}>
+                            <Box fontWeight="fontWeightBold" fontFamily="sans-serif" color='#007FFF'>
+                               {item.fullName.charAt(0)}
+                                </Box>
+                                         
+                            </Avatar> */}
+                                    </TableCell>
+                                    <TableCell>{item.fullName}</TableCell>
+                                    <TableCell
+                                        onClick={e => showForUpdate(item.id)}>
+                                        {item.city}
+                                    </TableCell>
+                                    <TableCell
+                                        onClick={e => showForUpdate(item.id)}>
+                                        {item.mobile}
+                                    </TableCell>
+                                     {
+               isToday == item.hireDate ? 
+                <TableCell  >
+                  <StyledBadge
+        overlap="circular"
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        variant="dot"
+      >
+        <Chip label={item.hireDate} onClick={e => showForUpdate(item.id)} color="error" variant="outlined"/>
+      </StyledBadge>
+         
+        </TableCell>
+     
+       : 
+          <TableCell  onClick={e => showForUpdate(item.id)}> 
+        {item.hireDate}
+          </TableCell>
+      
+              }
+              <TableCell onClick={e => showForUpdate(item.id)}>
+                   {
+               edited == item.status ? 
+                <TableCell  onClick={e => showForUpdate(item.id)}>
+                  <StyledBadge
+        overlap="circular"
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        variant="dot"
+      >
+        <Chip label={item.status}  color="error" variant="outlined"/>
+      </StyledBadge>
+         
+        </TableCell>
+     
+       : 
+          <TableCell  onClick={e => showForUpdate(item.id)}> 
+          <Chip label={item.status}  color="success" variant="outlined" 
+            icon={<Check fontSize="small" />}/>
+          </TableCell>
+      }
+                  </TableCell>
+             
+                                    
+                                    <TableCell
+                                        onClick={e => showForUpdate(item.id)}>
+                                        {NumberFormat(Number(item.gCash) + Number(item.onlinecash))}
+                                    </TableCell>
+                                    <TableCell>
+                                           {
+               edited == item.status ? 
+                <TableCell  >
+                     
+         
+        </TableCell>
+     
+       : 
+          <TableCell  > 
+         <DeleteOutlineTwoToneIcon
+                                           color="error"
+                                      onClick={() => {onDelete(item.id)
+                                      audio.play();
+                                      }
+                                    
+                                    } 
+                                           //  onClick={() => {
+                                       //deleteOrder(item.id)
+                                       //  audio.play();
+                                               // setConfirmDialog({
+                                                  //  isOpen: true,
+                                                    //avatarimage:item.imageSrc,
+                                                  //  title: 'Are you sure to delete this record?',
+                                                  //  subTitle: "You can't undo this operation",
+                                                  //  onConfirm: () => { onDelete(item.id) }
+                                              //  })
+                                          //  }}
+                                            
+                                            />
+          </TableCell>
+      }
+                                    
+
+                                    </TableCell>
+
+                                </TableRow>
+                            ))
+                        }
+                    </TableBody>
+
+                </Table>
+                 <TblPagination />
+            </TableContainer>
+            <ConfirmDialog
+                confirmDialog={confirmDialog}
+                setConfirmDialog={setConfirmDialog}
+            />
+
+            <Dialog
+        maxWidth={50}
+        onBackdropClick="false"
+        open={open}
+        hideBackdrop
+        onClose={handleClose}
+        aria-labelledby="draggable-dialog-title"
+        PaperComponent={PaperComponent}
+        aria-describedby="alert-dialog-description"
+      >
+         <DialogTitle className={classes.dialogTitle} style={{ cursor: 'move' }} id="draggable-dialog-title">
+                <div style={{ display: 'flex' }}>
+                    <Typography variant="h6"  style={{ flexGrow: 0.97}}>
+                       {/*values.fullName*/}
+                    </Typography>
+                     <Button className={`${classes.rootbutton}`}
+                        color="info"
+                        style={{  backgroundColor: 'lightblue'}} 
+                      
+                        >
+                      <Pdf targetRef={reportTemplateRef} filename="code-example.pdf">
+        {({ toPdf }) =>  <LocalPrintshopOutlinedIcon onClick={toPdf} /> }
+      
+      </Pdf> 
+                      
+                    </Button>
+                    <Button className={`${classes.rootbutton}`}
+                        color="error"
+                        style={{  backgroundColor: '#ffbfbf'}} 
+                        onClick={handleClose}>
+                   <CloseOutlined/>
+                    </Button>
+                </div>
+            </DialogTitle>
+            
+            
+        <DialogContent dividers>
+          <DialogContentText >
+               <Box width='794px' height="800px" className="watermark" id="divToPrint">
+             
+       <TableContainer >
+       
+      <Table ref={reportTemplateRef}>
+        <TableHead>
+          <TableRow>
+          <TableCell>ITEM ID</TableCell>
+             <TableCell>SALES DATE</TableCell>
+             <TableCell>SALES TYPE</TableCell>
+              <TableCell>NAME</TableCell>
+             <TableCell>ITEM NAME</TableCell>
+              <TableCell>QUANTITY</TableCell>
+             <TableCell>GROSS WEIGHT</TableCell>
+          </TableRow>
+        </TableHead>
+      
+        <TableBody>
+        
+           {
+   orderList?.map(item => (item.orderPercent.map((row) => 
+   <TableRow
+              key={row.id}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+               <TableCell  component="th" scope="row">{
+           row.id  }</TableCell>
+              <TableCell>{row.salesdate}</TableCell>
+               <TableCell>{item.status}</TableCell>
+                <TableCell>{item.fullName}</TableCell>
+              <TableCell >{row.foodItemName}</TableCell>
+                    <TableCell >{row.quantity}</TableCell>
+              <TableCell >{row.foodItemPrice+"G"}</TableCell>
+         
+          </TableRow>
+   )))}      
+   {
+   orderList?.map(item => (item.addorderDetails.map((row) => 
+   <TableRow
+              key={row.id}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+               <TableCell  component="th" scope="row">{
+           row.id  }</TableCell>
+              <TableCell>{row.salesdate}</TableCell>
+               <TableCell>{item.status}</TableCell>
+                <TableCell>{item.fullName}</TableCell>
+              <TableCell >{row.foodItemName}</TableCell>
+              <TableCell >{row.quantity}</TableCell>
+              <TableCell >{row.foodItemPrice+"G"}</TableCell>
+             
+          </TableRow>
+   )))}
+   
+    {
+   orderList?.map(item => (item.watageitems.map((row) => 
+   <TableRow
+              key={row.name}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+               <TableCell  component="th" scope="row">{
+           row.id  }</TableCell>
+              <TableCell>{row.salesdate}</TableCell> 
+              <TableCell>{item.status}</TableCell>
+                <TableCell>{item.fullName}</TableCell>
+              <TableCell >{row.foodItemName}</TableCell>
+                <TableCell >{row.quantity}</TableCell>
+              <TableCell >{row.foodItemPrice+"G"}</TableCell>
+             
+               
+          </TableRow>
+   )))}
+          
+{
+   orderList?.map(item => (item.orderDetails.map((row) => 
+   <TableRow
+              key={row.id}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+               <TableCell  component="th" scope="row">{
+           row.id  }</TableCell>
+              <TableCell>{row.salesdate}</TableCell>
+               <TableCell>{item.status}</TableCell>
+                <TableCell>{item.fullName}</TableCell>
+              <TableCell >{row.foodItemName}</TableCell>
+               <TableCell >{row.quantity}</TableCell>
+              <TableCell >{row.foodItemPrice+"G"}</TableCell>
+              
+          </TableRow>
+   )))}
+{
+   orderList.map(item => (item.fancyitems.map((row) => 
+   <TableRow
+              key={row.id}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+               <TableCell  component="th" scope="row">{
+           row.id  }</TableCell>
+              <TableCell>{row.salesdate}</TableCell>
+               <TableCell>{item.status}</TableCell>
+                <TableCell>{item.fullName}</TableCell>
+              <TableCell >{row.foodItemName}</TableCell>
+               <TableCell >{row.quantity}</TableCell>
+              <TableCell >{row.foodItemPrice+"G"}</TableCell>
+              
+          </TableRow>
+   )))}
+
+{
+   orderList?.map(item => (item.oldorderDetails.map((row) => 
+   <TableRow
+              key={row.id}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+               <TableCell  component="th" scope="row">{
+           row.id  }</TableCell>
+              <TableCell>{row.salesdate}</TableCell>
+               <TableCell>-</TableCell>
+                <TableCell>{item.fullName}</TableCell>
+              <TableCell >{row.foodItemNames}</TableCell>
+                 <TableCell >-</TableCell>
+              <TableCell >{row.foodItemPrices+"G"}</TableCell>
+            
+          </TableRow>
+   )))}
+ {
+   orderList.map(item => (item.oldorderDetailsilver.map((row) => 
+   <TableRow
+              key={row.name}
+              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+            >
+               <TableCell  component="th" scope="row">{
+           row.id  }</TableCell>
+              <TableCell>{row.salesdate}</TableCell>
+               <TableCell>-</TableCell>
+                <TableCell>{item.fullName}</TableCell>
+              <TableCell >{row.foodItemNames}</TableCell>
+                 <TableCell >-</TableCell>
+              <TableCell >{row.foodItemPrices+"G"}</TableCell>
+            
+          </TableRow>
+   )))}
+
+        </TableBody>
+      </Table>
+<Divider/>
+
+
+   
+   
+    
+    
+    </TableContainer> 
+
+
+         
+              
+         </Box>
+ 
+          </DialogContentText>
+       
+
+        </DialogContent>
+       
+      </Dialog>
+        </>
+    )
+}

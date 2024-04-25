@@ -1,0 +1,25 @@
+@media print {
+    .hide-on-print {
+        display: none;
+    }
+
+    body {
+        /* Define your custom footer style */
+        margin-bottom: 50px;
+        /* Adjust as needed */
+    }
+
+    @page {
+        size: auto;
+        /* Let the browser determine the page size */
+        margin: 25mm 15mm;
+        /* Adjust margins as needed */
+
+        /* Define your custom header and footer */
+        @bottom-center {
+            content: "Your Custom Footer Text";
+            font-size: 12px;
+            color: #333;
+        }
+    }
+}

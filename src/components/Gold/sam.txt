@@ -1,0 +1,601 @@
+{
+            
+            <TableRow
+                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+              <TableCell> GST</TableCell>
+             <TableCell> </TableCell>
+          <TableCell><Div> </Div> </TableCell>
+              <TableCell><Div> </Div> </TableCell>
+           <TableCell>S,C:3%</TableCell>
+               <TableCell><Div> </Div> </TableCell>
+                   <TableCell>
+               
+               <Div > {(values.scGst) - Number(values.gTotal)}</Div>
+                                         
+                                       </TableCell>
+          
+               <TableCell> -</TableCell>
+            </TableRow>
+          }
+
+
+return (
+        <>
+            <Form onSubmit={submitOrder}>
+                   <Box
+          sx={{
+            marginTop: 3,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        ></Box>
+        <Box   sx={{
+           marginRight:1,
+           marginLeft:1,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}></Box>
+                <Grid container>
+                    <Grid item xs={6}>
+                      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+  <Grid item xs={6}>
+   <FormControl size="small" fullWidth>
+          <InputLabel id="search-select-label">Select Customer</InputLabel>
+        <Select
+        
+         MenuProps={{
+              anchorOrigin: {
+                vertical: "bottom",
+                horizontal: "left"
+              },
+              transformOrigin: {
+                vertical: "bottom",
+                horizontal: "left"
+              },
+              getContentAnchorEl: null
+            }}
+          labelId="search-select-label"
+          id="search-select"
+         
+             value={selectedCountry}
+                  onChange={(e) => setSelectedCountry(e.target.value)}
+          label="Select Item"
+          renderValue={() => selectedCountry}
+          label="Options"
+          
+          onClose={() => setSearchText("")} >
+        
+          <ListSubheader>
+            <TextField
+              size="small"
+              
+              autoFocus
+              placeholder="Type to search..."
+              fullWidth
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon />
+                  </InputAdornment>
+                )
+              }}
+              onChange={(e) => setSearchText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key !== "Escape") {
+                  // Prevents autoselecting item while typing (default Select behaviour)
+                  e.stopPropagation();
+                }
+              }}
+            />
+          </ListSubheader>
+          {displayedOptions.map((item, i) => (
+            <MenuItem key={i} value={item}>
+              {item}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+  </Grid>
+  <Grid item xs={6}>
+    <TextField 
+               style ={{width: '90%'}}
+                size="small"
+                 onChange={handleInputChange}
+                            label="fullName"
+                            name="fullName"
+                            value={values.fullName}
+                            error={errors.fullName}
+                           InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+             <AttachMoneyOutlinedIcon/>
+            </InputAdornment>
+          ),
+        }} /> 
+  </Grid>
+  
+</Grid>   
+  <Box
+          sx={{
+            marginTop: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        ></Box>
+                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+  <Grid item xs={6}>
+<TextField 
+               fullWidth
+                size="small"
+                  onChange={handleInputChange}
+                            label="City"
+                            name="city"
+                            error={errors.city}
+                            value={values.city}
+                           InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+             <AttachMoneyOutlinedIcon/>
+            </InputAdornment>
+          ),
+        }} /> 
+  </Grid>
+  <Grid item xs={6}>
+    <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+  <Grid item xs={5.5}>
+{
+      values.gTotal < 0 ? <TextField 
+        inputProps={{ readOnly: true }}
+              fullWidth
+                size="small"
+                            label="Grand Total"
+                            name="gTotal"
+                          error
+                            value={NumberFormat(values.gTotal)}
+                           InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+             <AttachMoneyOutlinedIcon/>
+            </InputAdornment>
+          ),
+        }} /> :  <TextField 
+               fullWidth
+                 inputProps={{ readOnly: true }}
+                size="small"
+                            label="Grand Total"
+                            name="gTotal"
+                          
+                            value={NumberFormat(values.gTotal)}
+                           InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+             <AttachMoneyOutlinedIcon/>
+            </InputAdornment>
+          ),
+        }} />
+    }
+   
+  </Grid>
+
+   <Grid item xs={5.5}>
+
+    <TextField 
+                fullWidth
+                  inputProps={{ readOnly: true }}
+                size="small"
+                            label="GST"
+                            name="scGst"
+                        
+                            value={NumberFormat(values.scGst)}
+                           InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+             <AttachMoneyOutlinedIcon/>
+            </InputAdornment>
+          ),
+        }} /> 
+    
+   
+  </Grid>
+    </Grid>
+    
+    
+  </Grid>
+  
+</Grid>
+                    </Grid>
+       
+<Grid item xs={6}>
+<Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+  <Grid item xs={4}>
+      <TextField fullWidth 
+                       error={errors.mobile}
+                       size="small" focused inputProps={{ inputMode: 'numeric' }} 
+                       label="Mobile" name="mobile"
+     id="mobile" value={values.mobile} onChange={handleInputChange} />
+      
+  </Grid>
+  <Grid item xs={4}>
+    <Autocomplete
+     error={errors.status}
+    options={userService.getstatus}
+     freeSolo
+     onChange={handleInputChange}
+     value={values.status}
+    renderInput={params => {
+     
+        const inputProps = params.inputProps;
+        inputProps.autoComplete = "off";
+       
+        
+        return (
+          <TextField
+            {...params}
+             name="status"
+             size='small'
+              error={errors.status}
+             //error={errors.customerId}
+             value={values.status}
+            inputProps={inputProps}
+            
+            label="status"  
+            variant="outlined"
+            onBlur={handleInputChange}
+            fullWidth
+            
+          />
+            );
+      }
+    }
+/>
+</Grid>
+  <Grid item xs={4}>
+    { Math.sign((values.scGst - (Number(values.gCash) + Number(values.onlinecash)))) === -1 ? 
+    
+    values.gTotal < 0 ? <TextField 
+    color='secondary'
+               error
+                size="small"
+                  onChange={handleInputChange}
+                 
+                            label="GooglePay||PhonePay||AmazonPay"
+                            name="onlinecash"
+                            value={values.onlinecash}
+                           InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+             <AttachMoneyOutlinedIcon/>
+            </InputAdornment>
+          ),
+        }} /> :
+        <TextField 
+               color='secondary'
+                size="small"
+                  onChange={handleInputChange}
+                 
+                            label="GooglePay||PhonePay||AmazonPay"
+                            name="onlinecash"
+                            value={values.onlinecash}
+                           InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+             <AttachMoneyOutlinedIcon/>
+            </InputAdornment>
+          ),
+        }} />  : 
+         values.gTotal < 0 ? <TextField 
+               error
+                size="small"
+                  onChange={handleInputChange}
+                 
+                            label="GooglePay||PhonePay||AmazonPay"
+                            name="onlinecash"
+                            value={values.onlinecash}
+                           InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+             <AttachMoneyOutlinedIcon/>
+            </InputAdornment>
+          ),
+        }} /> :
+        <TextField 
+               
+                size="small"
+                  onChange={handleInputChange}
+                 
+                            label="GooglePay||PhonePay||AmazonPay"
+                            name="onlinecash"
+                            value={values.onlinecash}
+                           InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+             <AttachMoneyOutlinedIcon/>
+            </InputAdornment>
+          ),
+        }} /> 
+        }
+   
+    
+   
+  </Grid>
+</Grid>
+                    
+               
+                      <Box
+          sx={{
+            marginTop: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        ></Box>
+                                    <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+  <Grid item xs={4}>
+    { 
+    Math.sign((values.scGst - (Number(values.gCash) + Number(values.onlinecash)))) === -1 ?
+
+    values.scGst < 0 ?   <TextField 
+    color='secondary'
+              error
+               //color='success'
+               focused
+                size="small"
+                  onChange={handleInputChange}
+                            label="Credit Cash"
+                            name="gCash"
+                              //error={errors.gCash}
+                            value={values.gCash}
+                           InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+             <AttachMoneyOutlinedIcon/>
+            </InputAdornment>
+          ),
+        }} />  : 
+          <TextField 
+         color='secondary'
+               //color='success'
+               focused
+                size="small"
+                  onChange={handleInputChange}
+                            label="Credit Cash"
+                            name="gCash"
+                            //  error={errors.gCash}
+                            value={values.gCash}
+                           InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+             <AttachMoneyOutlinedIcon/>
+            </InputAdornment>
+          ),
+        }} /> :
+         values.scGst < 0 ?   <TextField 
+              error
+              
+               color='success'
+               focused
+                size="small"
+                  onChange={handleInputChange}
+                            label="Credit Cash"
+                            name="gCash"
+                            //  error={errors.gCash}
+                            value={values.gCash}
+                           InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+             <AttachMoneyOutlinedIcon/>
+            </InputAdornment>
+          ),
+        }} />  : 
+          <TextField 
+          
+               color='success'
+               focused
+                size="small"
+                  onChange={handleInputChange}
+                            label="Credit Cash"
+                            name="gCash"
+                            //  error={errors.gCash}
+                            value={values.gCash}
+                           InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+             <AttachMoneyOutlinedIcon/>
+            </InputAdornment>
+          ),
+        }} /> 
+        }
+  
+      
+  </Grid>
+  <Grid item xs={4}>
+    { Math.sign((values.scGst - (Number(values.gCash) + Number(values.onlinecash)))) === 1 ?
+      
+      <TextField 
+      color='secondary'
+              // color='error'
+               focused
+                size="small"
+                  onChange={handleInputChange}
+                 
+                            label="Debit Cash"
+                            name="debitcash"
+                            value={values.debitcash}
+                           InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+             <AttachMoneyOutlinedIcon/>
+            </InputAdornment>
+          ),
+        }} /> :
+         <TextField 
+              color='secondary'
+               focused
+                size="small"
+                  onChange={handleInputChange}
+                 
+                            label="Debit Cash"
+                            name="debitcash"
+                            value={values.debitcash}
+                           InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+             <AttachMoneyOutlinedIcon/>
+            </InputAdornment>
+          ),
+        }} /> 
+        }
+   
+  </Grid>
+  <Grid item xs={4}>
+    {values.scGst < 0 ? <TextField 
+    error
+             // fullWidth
+                size="small"
+                //  onChange={handleInputChange}
+                            label="Balance"
+                            name="discou"
+                            value={NumberFormat(values.scGst - (Number(values.gCash) + Number(values.onlinecash)) + (Number(values.debitcash)) )}
+                           InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+             <AttachMoneyOutlinedIcon/>
+            </InputAdornment>
+          ),
+        }} /> :
+        <TextField 
+             // fullWidth
+                size="small"
+                //  onChange={handleInputChange}
+                            label="Balance"
+                            name="discou"
+                            value={NumberFormat(values.scGst - ( Number(values.gCash) + Number(values.onlinecash)))}
+                           InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+             <AttachMoneyOutlinedIcon/>
+            </InputAdornment>
+          ),
+        }} />
+        }
+    
+   
+  </Grid>
+</Grid>
+  <Box
+          sx={{
+            marginTop: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        ></Box>
+        <Grid container spacing={3}>
+  <Grid item xs="auto">
+
+     <Stack direction="row" alignItems="center" spacing={2}>
+               <StyledBadge
+        overlap="circular"
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        variant="dot"
+      >
+      <Avatar  src={values.imageSrc} sx={{ width: 50, height: 50 ,bgcolor: 'white'}}>
+            <Box fontWeight="fontWeightBold" fontFamily="sans-serif" color='#007FFF'>
+                             <Avatar  src={Image_placeholder} sx={{ width: 50, height: 50 ,bgcolor: 'white'}}>
+                               </Avatar>
+                                </Box>
+             
+      </Avatar>
+      </StyledBadge>
+        </Stack> 
+
+    
+  </Grid>
+  <Grid item xs={6}>
+   <ButtonGroup variant="outlined" aria-label="outlined button group">
+ <ButtonGroup size="small" aria-label="small button group">
+       <Button type="submit" size="small" variant="contained" endIcon={<SendIcon />}>Submit</Button>
+   <Button
+          size="small"
+         aria-label="select merge strategy"
+          aria-haspopup="menu"
+        
+        >
+          <RotateLeftOutlinedIcon  onClick={ resetFormControls }/>
+        </Button>
+      </ButtonGroup>
+  <Box
+          sx={{
+         marginLeft: 2,
+           
+          }}
+        ></Box>
+  
+  <Button size="small" variant="contained" onClick={openListOfOrders} style={{backgroundColor:'black'}}>View</Button>      
+
+</ButtonGroup>
+  </Grid>
+  
+</Grid>
+     
+             
+                   
+                    </Grid>
+                </Grid>
+            </Form>
+             <Notification
+                {...{ notify, setNotify }} />
+
+                 <Popup
+                title="GST_Invoice History"
+                openPopup={orderListVisibility}
+                setOpenPopup={setOrderListVisibility}>
+                <OrderList
+                    {...{ setOrderId, setOrderListVisibility, resetFormControls, setNotify }} />
+            </Popup>
+     
+                <Dialog sx={{
+                  
+       
+       bottom: 200
+     }}
+     disableEscapeKeyDown={false}
+     
+     disablebackdropclick
+        open={open}
+       // TransitionComponent={Transition}
+        keepMounted
+        onClose={handleClose}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>{"ADD ITEM"}
+        <IconButton
+          aria-label="close"
+          onClick={handleClose}
+          sx={{
+            position: 'absolute',
+            right: 8,
+            top: 8,
+            color: (theme) => theme.palette.grey[500],
+          }}
+        >
+        
+          <CloseIcon />
+        </IconButton>
+        </DialogTitle>
+        <DialogContent dividers>
+          <OrderList
+                    {...{ setOrderId, setOrderListVisibility, resetFormControls, setNotify }} />
+       
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Disagree</Button>
+          <Button onClick={handleClose}>Agree</Button>
+        </DialogActions>
+      </Dialog>
+        </>
+    )
+}

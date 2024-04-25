@@ -1,0 +1,277 @@
+ <Form onSubmit={submitOrder}>
+                   <Box
+          sx={{
+            marginTop: 3,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        ></Box>
+        <Box   sx={{
+           marginRight:1,
+           marginLeft:1,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}></Box>
+                <Grid container>
+                    <Grid item xs={6}>
+                      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+  <Grid item xs={6}>
+     <Select
+     style ={{width: '90%'}}
+                name="status"
+                label="Status"
+                onChange={handleInputChange}
+                  value={values.status}
+                //value={values.departmentId}
+                //onChange={handleInputChange}
+                options={userService.getDepartmentCollection()} 
+                />
+    
+  </Grid>
+  <Grid item xs={6}>
+    <TextField 
+               style ={{width: '90%'}}
+                size="small"
+                 onChange={handleInputChange}
+                            label="shopName"
+                            name="shopName"
+                            value={values.shopName}
+                            error={errors.shopName}
+                           InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+             <AttachMoneyOutlinedIcon/>
+            </InputAdornment>
+          ),
+        }} /> 
+  </Grid>
+  
+</Grid>   
+  <Box
+          sx={{
+            marginTop: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        ></Box>
+                <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+  <Grid item xs={6}>
+<TextField 
+               fullWidth
+                size="small"
+                  onChange={handleInputChange}
+                            label="City"
+                            name="city"
+                            error={errors.city}
+                            value={values.city}
+                           InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+             <AttachMoneyOutlinedIcon/>
+            </InputAdornment>
+          ),
+        }} /> 
+  </Grid>
+  <Grid item xs={6}>
+     {
+      0 > values.gTotal ? 
+    <TextField 
+    error
+                style ={{width: '90%'}}
+                size="small"
+                            label="Grand Total"
+                            name="gTotal"
+                          
+                            value={NumberFormat(values.gTotal)}
+                           InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+             <AttachMoneyOutlinedIcon/>
+            </InputAdornment>
+          ),
+        }} />
+
+        :
+
+        <TextField 
+                style ={{width: '90%'}}
+                size="small"
+                            label="Grand Total"
+                            name="gTotal"
+                          
+                            value={NumberFormat(values.gTotal)}
+                           InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+             <AttachMoneyOutlinedIcon/>
+            </InputAdornment>
+          ),
+        }} />
+    }
+    
+    
+  </Grid>
+  
+</Grid>
+                    </Grid>
+       
+<Grid item xs={6}>
+
+
+      <TextField fullWidth 
+                       error={errors.mobile}
+                       size="small" focused inputProps={{ inputMode: 'numeric' }} 
+                       label="Mobile" name="mobile"
+     id="mobile" value={values.mobile} onChange={handleInputChange} />
+      
+
+  
+ 
+
+                    
+               
+                      <Box
+          sx={{
+            marginTop: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        ></Box>
+                                    <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+  <Grid item xs={4}>
+    <TextField 
+               
+                size="small"
+                  onChange={handleInputChange}
+                            label="Amount Paid"
+                            name="gCash"
+                              error={errors.gCash}
+                            value={values.gCash}
+                           InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+             <AttachMoneyOutlinedIcon/>
+            </InputAdornment>
+          ),
+        }} /> 
+      
+  </Grid>
+  <Grid item xs={4}>
+   <TextField 
+               
+                size="small"
+                  onChange={handleInputChange}
+                 
+                            label="Amount Debit"
+                            name="onlinecash"
+                            value={values.onlinecash}
+                           InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+             <AttachMoneyOutlinedIcon/>
+            </InputAdornment>
+          ),
+        }} /> 
+  </Grid>
+  <Grid item xs={4}>
+    {
+      0 > values.gTotal ? 
+       <TextField 
+       error
+             // fullWidth
+                size="small"
+                //  onChange={handleInputChange}
+                            label="Balance"
+                            name="discou"
+                            value={NumberFormat(values.gTotal - ( Number(values.gCash) - Number(values.onlinecash)))}
+                           InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+             <AttachMoneyOutlinedIcon/>
+            </InputAdornment>
+          ),
+        }} /> 
+        :
+         <TextField 
+             // fullWidth
+                             size="small"
+                //  onChange={handleInputChange}
+                            label="discou"
+                            name="discou"
+                            value={NumberFormat(values.gTotal - ( Number(values.gCash) + Number(values.onlinecash)))}
+                           InputProps={{
+          startAdornment: (
+            <InputAdornment position="start">
+             <AttachMoneyOutlinedIcon/>
+            </InputAdornment>
+          ),
+        }} />
+    }
+   
+   
+  </Grid>
+</Grid>
+  <Box
+          sx={{
+            marginTop: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        ></Box>
+        <Grid container spacing={3}>
+  <Grid item xs="auto">
+
+     <Stack direction="row" alignItems="center" spacing={2}>
+               <StyledBadge
+        overlap="circular"
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        variant="dot"
+      >
+      <Avatar  src={values.imageSrc} sx={{ width: 50, height: 50 ,bgcolor: 'white'}}>
+            <Box fontWeight="fontWeightBold" fontFamily="sans-serif" color='#007FFF'>
+                             <Avatar  src={Image_placeholder} sx={{ width: 50, height: 50 ,bgcolor: 'white'}}>
+                               </Avatar>
+                                </Box>
+             
+      </Avatar>
+      </StyledBadge>
+        </Stack> 
+
+    
+  </Grid>
+  <Grid item xs={6}>
+   <ButtonGroup variant="outlined" aria-label="outlined button group">
+ <ButtonGroup size="small" aria-label="small button group">
+       <Button type="submit" size="small" variant="contained" endIcon={<SendIcon />}>Submit</Button>
+   <Button
+          size="small"
+         aria-label="select merge strategy"
+          aria-haspopup="menu"
+        
+        >
+          <RotateLeftOutlinedIcon  onClick={ resetFormControls }/>
+        </Button>
+      </ButtonGroup>
+  <Box
+          sx={{
+         marginLeft: 2,
+           
+          }}
+        ></Box>
+        
+  <Button size="small" variant="contained" onClick={openListOfOrders} style={{backgroundColor:'black'}}>View</Button> 
+</ButtonGroup>
+  </Grid>
+  
+</Grid>
+     
+             
+                   
+                    </Grid>
+                </Grid>
+            </Form>

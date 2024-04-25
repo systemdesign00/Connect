@@ -1,0 +1,12 @@
+.text-container {
+    position: relative;
+}
+
+.text-container::after {
+    content: "(1069.600Gx73=₹78,081.00)";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    font-size: 12px;
+    color: gray;
+}

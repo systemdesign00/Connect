@@ -1,0 +1,55 @@
+.table-container {
+    width: 100%;
+
+    padding: 10px 20px 20px;
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: white;
+    border-radius: 8px;
+    margin-top: 20px;
+    /* Added space above the container to accommodate the header */
+}
+
+.header-card {
+    position: absolute;
+    margin-top: -20px;
+    /* Adjust top position so the entire header is visible */
+    left: 40px;
+    background: linear-gradient(135deg, #2962ff, #00b0ff);
+    right: 40px;
+    background-color: #8E24AA;
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: le;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+    /* Ensure it is above all table content */
+}
+
+.mui-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 40px;
+    /* Increased space for the header */
+}
+
+.mui-table thead th {
+    background-color: #6200EA;
+    color: white;
+    padding: 10px;
+    position: sticky;
+    top: 0;
+    /* Keeps header at top when scrolling */
+    z-index: 10;
+}
+
+.mui-table tbody td {
+    padding: 10px;
+    background-color: #FFF;
+    border-bottom: 1px solid #ddd;
+}
+
+.mui-table tbody tr:hover {
+    background-color: #f5f5f5;
+}

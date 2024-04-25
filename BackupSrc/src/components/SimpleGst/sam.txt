@@ -1,0 +1,90 @@
+
+                      <TableRow className={classes.tablerow}>
+                              <TableCell></TableCell>
+                              <TableCell></TableCell>
+                               <TableCell></TableCell>
+                          <TableCell></TableCell>
+                            <TableCell></TableCell>
+                          <TableCell sx={{wordBreak:"break-all",padding: '8px'}}>Grant Total</TableCell>
+                        <TableCell sx={{wordBreak:"break-all",padding: '8px'}}>{NumberFormat(Math.round(Number(newitem) + (((newitem*1.5)/100) + ((newitem*1.5)/100))))}</TableCell>
+                           </TableRow>
+                         
+                     
+
+{
+  values.oldbillno !== '' ?
+  <> 
+    <TableRow className={classes.tablerow}>
+                              <TableCell>@BILL NO:{values.oldbillno}{values.oldbillid}</TableCell>
+                              <TableCell></TableCell>
+                               <TableCell></TableCell>
+                          <TableCell></TableCell>
+                            <TableCell></TableCell>
+                          <TableCell sx={{wordBreak:"break-all",padding: '8px'}}>Sales Adjustment</TableCell>
+                        <TableCell sx={{wordBreak:"break-all",padding: '8px'}}>{NumberFormat(values.oldgoldamount)}</TableCell>
+                           </TableRow>
+   <TableRow className={classes.tablerow}>
+                      <TableCell></TableCell>
+                      <TableCell></TableCell>
+                      <TableCell></TableCell>
+                      <TableCell></TableCell>
+                      <TableCell></TableCell>
+                      <TableCell sx={{wordBreak:"break-all",padding: '8px'}}>Net Amount</TableCell>
+                      <TableCell sx={{wordBreak:"break-all",padding: '8px'}}>
+{NumberFormat(Math.round(Number(newitem) + (((newitem*1.5)/100) + ((newitem*1.5)/100)))
+                      - Number(values.oldgoldamount))}</TableCell>
+                    </TableRow>
+  <TableRow className={classes.tablerow}>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell sx={{wordBreak:"break-all",padding: '8px'}}>Less:Rebate</TableCell>
+                    <TableCell sx={{wordBreak:"break-all",padding: '8px'}}>{NumberFormat((Number(Math.round(Number(newitem) + (((newitem * 1.5) / 100) + ((newitem * 1.5) / 100)))) 
+                      - Number(values.oldgoldamount)) - (Number(values.gCash) + Number(values.onlinecash)))}</TableCell>
+                  </TableRow>
+                  <TableRow className={classes.tablerow}>
+                      <TableCell></TableCell>
+                      <TableCell></TableCell>
+                      <TableCell></TableCell>
+                      <TableCell></TableCell>
+                      <TableCell></TableCell>
+                      {
+                       values.oldgoldamount > Number(newitem) + (((newitem*1.5)/100) + ((newitem*1.5)/100)) ?
+                              <><TableCell sx={{ wordBreak: "break-all", padding: '8px' }}>Payout</TableCell>
+                              <TableCell sx={{ wordBreak: "break-all", padding: '8px' }}>{NumberFormat((Number(values.payout)))}</TableCell></> :
+
+                              <><TableCell sx={{ wordBreak: "break-all", padding: '8px' }}>Amount Received</TableCell>
+                              <TableCell sx={{ wordBreak: "break-all", padding: '8px' }}>{NumberFormat((Number(values.gCash) + Number(values.onlinecash)))}</TableCell></>
+                      }
+
+                    </TableRow>
+                    
+                    </>
+       :
+       <>
+       <TableRow className={classes.tablerow}>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell></TableCell>
+                    <TableCell>Less:Rebate</TableCell>
+                    <TableCell sx={{wordBreak:"break-all",padding: '8px'}}>{NumberFormat(Number(Math.round(Number(newitem) + (((newitem * 1.5) / 100) + ((newitem * 1.5) / 100)))) -
+                      (Number(values.gCash) + Number(values.onlinecash)))}</TableCell>
+                  </TableRow>
+                  <TableRow className={classes.tablerow}>
+                      <TableCell></TableCell>
+                      <TableCell></TableCell>
+                      <TableCell></TableCell>
+                      <TableCell></TableCell>
+                      <TableCell></TableCell>
+                      <TableCell>Amount Received</TableCell>
+                      <TableCell sx={{wordBreak:"break-all",padding: '8px'}}>{NumberFormat((Number(values.gCash) + Number(values.onlinecash)))}</TableCell>
+                    </TableRow>
+                    
+                    </>
+       
+   }
+     

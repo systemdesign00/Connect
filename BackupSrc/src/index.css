@@ -1,0 +1,119 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+::-webkit-scrollbar {
+  display: none;
+}
+@font-face {
+  font-family: "Zanzabar";
+  src: url(./Fonts/Zanzabar.ttf);
+}
+
+@media print {
+  .hide-on-print {
+    display: none;
+  }
+    body {
+      /* Define your custom footer style */
+      margin-bottom: 50px;
+      /* Adjust as needed */
+    }
+  
+    @page {
+      size: auto;
+      /* Let the browser determine the page size */
+      margin: 25mm 15mm;
+      /* Adjust margins as needed */
+  
+      /* Define your custom header and footer */
+      @bottom-center {
+        content: "Your Custom Footer Text";
+        font-size: 12px;
+        color: #333;
+      }
+    }
+}
+
+
+
+buttons {
+  padding: 1.5em 5em;
+  background: #efefef;
+  border: none;
+  border-radius: 0.1rem;
+  color: #444;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0.2rem;
+  text-align: center;
+  outline: none;
+  cursor: pointer;
+  transition: 0.2s ease-in-out;
+  box-shadow: -6px -6px 14px rgba(255, 255, 255, 0.7),
+    -6px -6px 10px rgba(255, 255, 255, 0.5),
+    6px 6px 8px rgba(255, 255, 255, 0.075), 6px 6px 10px rgba(0, 0, 0, 0.15);
+}
+buttons:hover {
+  box-shadow: -2px -2px 6px rgba(255, 255, 255, 0.6),
+    -2px -2px 4px rgba(255, 255, 255, 0.4),
+    2px 2px 2px rgba(255, 255, 255, 0.05), 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+buttons:active {
+  box-shadow: inset -2px -2px 6px rgba(255, 255, 255, 0.7),
+    inset -2px -2px 4px rgba(255, 255, 255, 0.5),
+    inset 2px 2px 2px rgba(255, 255, 255, 0.075),
+    inset 2px 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.watermark {
+  position: relative;
+}
+
+.watermark:after {
+  content: "";
+  display: block;
+  pointer-events: none;
+  width: 350px;
+  height: 350px;
+  position: absolute;
+  left: 230px;
+  top: 350px;
+  align-items: center;
+  background-image: url('./img/watermarkcolor.png');
+  background-size: contain;
+  background-position: 30px 30px;
+  background-repeat: no-repeat;
+  opacity: 0.5;
+}
+
+
+.watermarksales {
+  position: relative;
+}
+
+.watermarksales:after {
+  content: "";
+  display: block;
+  pointer-events: none;
+  width: 350px;
+  height: 350px;
+  position: absolute;
+  left: 230px;
+  top: 350px;
+  align-items: center;
+  background-image: url('./img/waatermarkdj.png');
+  background-size: contain;
+  background-position: 30px 30px;
+  background-repeat: no-repeat;
+  opacity: 0.5;
+}

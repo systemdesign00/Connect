@@ -1,0 +1,255 @@
+import React, {useEffect, useState} from 'react';
+import { createAPIEndpoint, ENDPIONTS} from '../../api';
+import { styled } from '@mui/material/styles';
+import {Grid , Chip ,Badge,TextField} from '@mui/material';
+import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
+import InputBase from '@mui/material/InputBase';
+import Divider from '@mui/material/Divider';
+import IconButton from '@mui/material/IconButton';
+import MenuIcon from '@mui/icons-material/Menu';
+import SearchIcon from '@mui/icons-material/Search';
+import DirectionsIcon from '@mui/icons-material/Directions';
+import ButtonBase from '@mui/material/ButtonBase';
+import {NumberFormat} from '../../Services/NumberFormat';
+import { makeStyles } from '@mui/styles';
+import { useTheme } from '@mui/material/styles';
+import Container from '@mui/material/Container';
+const Img = styled('img')({
+  margin: 'auto',
+  display: 'block',
+  maxWidth: '100%',
+  maxHeight: '100%',
+});
+const StyledBadge = styled(Badge)(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    backgroundColor: 'red',
+    color: 'red',
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    '&::after': {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      borderRadius: '50%',
+      animation: 'ripple 1.2s infinite ease-in-out',
+      border: '1px solid currentColor',
+      content: '""',
+    },
+  },
+  '@keyframes ripple': {
+    '0%': {
+      transform: 'scale(.8)',
+      opacity: 1,
+    },
+    '100%': {
+      transform: 'scale(2.4)',
+      opacity: 0,
+    },
+  },
+}));
+const useStyles = makeStyles((theme) => ({
+    table: {
+      minWidth: 1000,
+    },
+    tableContainer: {
+        borderRadius: 15,
+        margin: '70px',
+        maxWidth: '90%'
+    },
+    tableHeaderCell: {
+        fontWeight: 'bold',
+        backgroundColor: useTheme().palette.primary.dark,
+        color: useTheme().palette.getContrastText(useTheme().palette.primary.dark)
+    },
+    avatar: {
+        backgroundColor: useTheme().palette.primary.light,
+        color: useTheme().palette.getContrastText(useTheme().palette.primary.light)
+    },
+    name: {
+        fontWeight: 'bold',
+        color: useTheme().palette.secondary.dark
+    },
+    city: {
+        fontWeight: 'bold',
+        color: useTheme().palette.primary.main
+    },
+    mobile: {
+        fontWeight: 'bold',
+        //color: useTheme().palette.error.dark
+    },
+    ordernumber:{
+        fontWeight: 'bold',
+        color: useTheme().palette.primary.dark
+    },
+    hiredate:{
+        fontWeight: 'bold',
+       // color: useTheme().palette.primary.dark
+    },
+    status: {
+        fontWeight: 'bold',
+        fontSize: '0.85rem',
+        color: 'white',
+        backgroundColor: 'green',
+        borderRadius: 8,
+        padding: '3px 10px',
+        display: 'inline-block'
+    }
+  }));
+export default function Invoicehistory() {
+const classes = useStyles();
+    const [orderList, setOrderList] = useState([]);
+    let today = new Date();
+
+const isToday = today.getDate() + "-"+ parseInt(today.getMonth()+1) +"-"+today.getFullYear();
+     const fetchAlled = () => {
+         createAPIEndpoint(ENDPIONTS.ORDER).fetchAll()
+            .then(res => {
+                setOrderList(res.data)
+            })
+             .catch(err => console.log(err))
+            //.catch(
+              //    errorsound.play(),
+                //setNotify({ isOpen: true, message: "Error Check Your Network",severity:"warning" }))
+    }
+    useEffect(() => {
+        createAPIEndpoint(ENDPIONTS.ORDER).fetchAll()
+            .then(res => {
+              
+                setOrderList(res.data)
+            })
+            .catch(err => console.log(err))
+    }, [])
+  return (
+    <><Container fixed maxWidth="xl" disableGutters>
+      <Grid container spacing={3}>
+  <Grid item xs="auto">
+     <Paper
+      component="form"
+      sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 350 }}
+    >
+      <IconButton sx={{ p: '10px' }} aria-label="menu">
+        <MenuIcon />
+      </IconButton>
+      <InputBase
+        sx={{ ml: 1, flex: 1 }}
+        placeholder="Search Google Maps"
+        inputProps={{ 'aria-label': 'search google maps' }}
+      />
+      <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+        <SearchIcon />
+      </IconButton>
+      <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+      <IconButton color="primary" sx={{ p: '10px' }} aria-label="directions">
+        <DirectionsIcon />
+      </IconButton>
+    </Paper>
+  </Grid>
+  <Grid item xs="auto">
+    <Paper
+      component="form"
+      sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 350 }}
+    >
+      <IconButton sx={{ p: '10px' }} aria-label="menu">
+        <MenuIcon />
+      </IconButton>
+      <InputBase
+        sx={{ ml: 1, flex: 1 }}
+        placeholder="Search Google Maps"
+        inputProps={{ 'aria-label': 'search google maps' }}
+      />
+      <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+        <SearchIcon />
+      </IconButton>
+      <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+      <IconButton color="primary" sx={{ p: '10px' }} aria-label="directions">
+        <DirectionsIcon />
+      </IconButton>
+    </Paper>
+  </Grid>
+  <Grid item xs="auto">
+   <Paper
+      component="form"
+      sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 350 }}
+    >
+      <IconButton sx={{ p: '10px' }} aria-label="menu">
+        <MenuIcon />
+      </IconButton>
+      <InputBase
+        sx={{ ml: 1, flex: 1 }}
+        placeholder="Search Google Maps"
+        inputProps={{ 'aria-label': 'search google maps' }}
+      />
+      <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+        <SearchIcon />
+      </IconButton>
+      <Divider sx={{ height: 28, m: 0.5 }} orientation="vertical" />
+      <IconButton color="primary" sx={{ p: '10px' }} aria-label="directions">
+        <DirectionsIcon />
+      </IconButton>
+    </Paper>
+  </Grid>
+</Grid>
+
+      
+
+        {orderList.map((data, id) => (
+          <Paper key={data.id}
+
+            sx={{
+              p: 1,
+              margin: 4,
+              maxWidth: 'auto',
+              flexGrow: 1,
+              backgroundColor: (theme) => theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+            }}
+          >
+            <Grid container spacing={2}>
+
+              <><Grid item>
+                <ButtonBase sx={{ width: 128, height: 128 }}>
+                  <Img alt={data.fullName} src={data.imageSrc} />
+                </ButtonBase>
+                <Typography variant="body2" className={classes.ordernumber}>
+                  ID: {data.orderNumber}
+                </Typography>
+              </Grid><Grid item xs={12} sm container>
+                  <Grid item xs container direction="column" spacing={2}>
+                    <Grid item xs>
+                      <Typography gutterBottom variant="subtitle1" component="div" className={classes.name}>
+                        {data.fullName}
+                      </Typography>
+                      <Typography variant="body2" gutterBottom className={classes.city}>
+                        {data.city}
+                      </Typography>
+                      <Typography variant="body2" gutterBottom className={classes.mobile}>
+                        {data.mobile}
+                      </Typography>
+                    </Grid>
+                    <Grid item>
+
+                      {isToday == data.hireDate ?
+                        <StyledBadge
+                          overlap="circular"
+                          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                          variant="dot"
+                        >
+                          <Chip label={data.hireDate} color="error" variant="outlined" />
+                        </StyledBadge>
+                        : <Chip label={data.hireDate} color="default" variant="filled" />}
+                    </Grid>
+                  </Grid>
+                  <Grid item>
+                    <Chip label={NumberFormat(Number(data.gCash) + Number(data.onlinecash))} color="success" variant="outlined" />
+
+                  </Grid>
+
+                </Grid></>
+
+            </Grid>
+          </Paper>
+        ))}
+      </Container></>
+  );
+}

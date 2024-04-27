@@ -3,9 +3,9 @@
   "name": "material-dashboard-2-react",
   "version": "2.2.0",
   "private": true,
-  "author": "Creative Tim",
+  "author": "Connect",
   "license": "See license",
-  "description": "React version of Material Dashboard 2 by Creative Tim",
+  "description": "Connect",
   "dependencies": {
     "@babel/core": "^7.17.5",
     "@babel/preset-env": "^7.16.11",

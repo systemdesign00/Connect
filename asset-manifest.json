@@ -1,11 +1,9 @@
 {
   "files": {
-    "main.css": "/systemdesign00/Connect/static/css/main.d555bef2.css",
-    "main.js": "/systemdesign00/Connect/static/js/main.359f500a.js",
-    "static/js/313.740e4913.chunk.js": "/systemdesign00/Connect/static/js/313.740e4913.chunk.js",
-    "static/js/249.8399c963.chunk.js": "/systemdesign00/Connect/static/js/249.8399c963.chunk.js",
-    "static/js/522.5ada072b.chunk.js": "/systemdesign00/Connect/static/js/522.5ada072b.chunk.js",
-    "static/media/pattern-tree.svg": "/systemdesign00/Connect/static/media/pattern-tree.156bb943ac7fd244f10c115d085e085e.svg",
+    "main.css": "/systemdesign00/Connect/static/css/main.0fff7ab5.css",
+    "main.js": "/systemdesign00/Connect/static/js/main.22bd601c.js",
+    "static/js/703.5cb73fe0.chunk.js": "/systemdesign00/Connect/static/js/703.5cb73fe0.chunk.js",
+    "static/js/198.4b2c7d89.chunk.js": "/systemdesign00/Connect/static/js/198.4b2c7d89.chunk.js",
     "static/media/home-decor-3.jpg": "/systemdesign00/Connect/static/media/home-decor-3.74d13fcbd3c631fc7908.jpg",
     "static/media/home-decor-2.jpg": "/systemdesign00/Connect/static/media/home-decor-2.b4e5397c9846645ba275.jpg",
     "static/media/home-decor-1.jpg": "/systemdesign00/Connect/static/media/home-decor-1.05e218fd495ccc65c99d.jpg",
@@ -42,10 +40,14 @@
     "static/media/logo-jira.svg": "/systemdesign00/Connect/static/media/logo-jira.c19fd4e416babfbd0fdb0a794188c601.svg",
     "static/media/logo-atlassian.svg": "/systemdesign00/Connect/static/media/logo-atlassian.f2b0e8570a4b4ce768854ff3dad1a6e1.svg",
     "static/media/logo-asana.svg": "/systemdesign00/Connect/static/media/logo-asana.d758f410d82760a61d1eabcb03409de6.svg",
-    "index.html": "/systemdesign00/Connect/index.html"
+    "index.html": "/systemdesign00/Connect/index.html",
+    "main.0fff7ab5.css.map": "/systemdesign00/Connect/static/css/main.0fff7ab5.css.map",
+    "main.22bd601c.js.map": "/systemdesign00/Connect/static/js/main.22bd601c.js.map",
+    "703.5cb73fe0.chunk.js.map": "/systemdesign00/Connect/static/js/703.5cb73fe0.chunk.js.map",
+    "198.4b2c7d89.chunk.js.map": "/systemdesign00/Connect/static/js/198.4b2c7d89.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.d555bef2.css",
-    "static/js/main.359f500a.js"
+    "static/css/main.0fff7ab5.css",
+    "static/js/main.22bd601c.js"
   ]
 }
